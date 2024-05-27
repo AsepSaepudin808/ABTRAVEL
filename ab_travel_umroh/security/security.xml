@@ -1,0 +1,12 @@
+<odoo>
+    <!-- Membuat Category Group Travel -->
+    <record id="module_category_travel_umroh" model="ir.module.category">
+        <field name="name">Travel</field>
+    </record>
+
+    <!-- Membuat Group Travel -->
+    <record id="group_training_user" model="res.groups">
+        <field name="name">Travel/User</field>
+        <field name="category_id" ref="module_category_travel_umroh"/>
+    </record>
+</odoo>

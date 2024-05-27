@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_travel_package_user,ab_travel_umroh.travel.package,model_travel_package,base.group_user,1,1,1,1
+access_hotel_line_user,ab_travel_umroh.hotel.line,model_hotel_line,base.group_user,1,1,1,1
+access_airline_line_user,ab_travel_umroh.airline.line,model_airline_line,base.group_user,1,1,1,1
+access_schedule_line_user,ab_travel_umroh.schedule.line,model_schedule_line,base.group_user,1,1,1,1
+access_manifest_line_user,ab_travel_umroh.manifest.line,model_manifest_line,base.group_user,1,1,1,1
+access_hpp_line_user,ab_travel_umroh.hpp.line,model_hpp_line,base.group_user,1,1,1,1
+access_passport_line_user,ab_travel_umroh.passport.line,model_passport_line,base.group_user,1,1,1,1

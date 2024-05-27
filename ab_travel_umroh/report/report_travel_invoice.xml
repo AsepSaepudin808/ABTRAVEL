@@ -1,0 +1,195 @@
+<odoo>
+
+    <template id="move_form">
+            
+        <xpath expr="//div[@class='header']" position="replace">
+            <div class="header" style="display:flex; align-items:center; justify-content:center; text-align:center; height:150px;">
+                <h1 style="text-bold; height:100px; padding-top:55px;">
+                        <strong>CUSTOMER INVOICE</strong>
+                </h1>
+            </div>
+        </xpath>
+
+
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+            
+                    <div class="page">
+                        <div class="row">
+                        <table style="width:50%; margin-left:10px;">
+                                <tbody >
+                                    <tr style="">
+                                        <td style="width:25%; border-right:0.5pt solid grey;  padding:5px; font-weight: bold;">Customer</td>
+                                        <td style="width:75%;padding:5px;">
+                                            <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["name"], "no_marker": True}'/>
+                                        </td>
+                                    </tr>
+
+                                    <tr style=";">
+                                        <td style="width:25%; border-right:0.5pt solid grey; padding:5px; font-weight: bold;">Address</td>
+                                        <td style="width:75%;padding:5px; ">
+                                            <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["city"], "no_marker": True}'/>
+                                        </td>
+                                    </tr>
+                                    <tr style=";">
+                                        <td style="width:25%; border-right:0.5pt solid grey; padding:5px;  font-weight: bold;">Mobile</td>
+                                        <td style="width:75%;padding:5px;">
+                                            <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["mobile"], "no_marker": True}'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                            <table style="width:50%">
+                                <tbody>
+
+                                    <tr style="border-top:1px solid rgb(222, 226, 230);">
+                                        <td style="width:33%;padding:5px;color:black;font-weight: bold;">No</td>
+                                        <td style="width:66%;padding:5px;">
+                                            <t t-esc="o.display_name"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr style="">
+                                        <td style="width: 25%; border-right: 0.5pt solid grey; padding: 5px; font-weight: bold;">Tanggal</td>
+                                        <td style="width: 75%; padding: 5px;">
+                                            <t t-if="o.invoice_date and isinstance(o.invoice_date, (datetime.date, datetime.datetime))">
+                                                <span t-esc="o.invoice_date.strftime('%d %B %Y')"/>
+                                            </t>
+                                            <t t-else="">
+                                            
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            </div>
+                        <br/>
+                        <table  class="table table-sm o_main_table" name="invoice_line_table">
+                            <thead>
+                                <tr>
+                                    <th >
+                                        <strong>Product</strong>
+                                    </th>
+                                    <th class="text-right">
+                                        <strong>QTY</strong>
+                                    </th>
+                                    <th class="text-right">
+                                        <strong>Price Unit</strong>
+                                    </th>
+                                    <th class="text-right">
+                                        <strong>Subtotal</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                                <tbody>
+                                    <t t-foreach="o.invoice_line_ids" t-as="invoice">
+                                        <tr>
+                                            <td class="text-center">
+                                                <t t-esc="invoice.product_id.name"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-esc="invoice.quantity"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-esc="'${:,.2f}'.format(invoice.price_unit)"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-esc="'${:,.2f}'.format(invoice.price_subtotal)"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                <tfoot style="color:black;font-weight: bold;font-weight: bold;">
+                                    <tr>
+                                        <td style="font-weight:bold; text-align:right" colspan="3">Total</td>
+                                        <td class="text-right">
+                                            <t t-esc="o.amount_total"/>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+
+
+                        </table>
+                        
+                            <h5 style="text-bold; height:100px; text-align:center; padding-top:55px;">
+                            <strong>Payment</strong>
+                </h5>
+
+                <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th >
+                                        <strong>Method</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Tanggal</strong>
+                                    </th>
+                                    <th class="text-right">
+                                        <strong>Amount</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <t t-set="payments_vals" t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
+                                <t t-foreach="payments_vals" t-as="payment_vals">
+                                <tr>
+                                    <td>
+                                        <i class="oe_form_field text-right oe_payment_label"><t t-esc="payment_vals['journal_name']"   /></i>
+                                    </td>
+                                    <td>
+                                        <i class="oe_form_field text-right oe_payment_label"><t t-esc="payment_vals['date']" t-options='{"widget": "date"}'/></i>
+                                    </td>
+                                        <td class="text-right">
+                                            <span t-esc="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                    <tr>
+                                    <td colspan="2" style="font-weight:bold; text-align:right">
+                                        <strong>Sisa</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.amount_residual" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
+
+                        <table style="height: 226px; width: 50%; margin-left: auto; margin-right: auto;  border: 1px solid; border-collapse: collapse;" border="2">
+                            <tbody>
+                                <tr style="height: 226px;">
+                                    <td style="width: 50%; height: 226px;">
+                                        <table style="height: 215px; width: 100.286%; border-collapse: collapse;" border="0">
+                                            <tbody>
+                                                <tr style="height: 18px;">
+                                                    <td style="width: 50%; text-align: center; height: 18px;">Finance</td>
+                                                </tr>
+                                                <tr style="height: 183px;">
+                                                    <td style="width: 50%; height: 153px; text-align: center;"></td>
+                                                </tr>
+                                                <tr style="height: 5px;">
+                                                    <td style="width: 50%; height: 5px; text-align: center;">
+                                                        <p t-field="o.env.user.name"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </t>
+            </t>
+        </t>
+
+        </template>
+</odoo>
